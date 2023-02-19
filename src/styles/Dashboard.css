@@ -1,0 +1,59 @@
+html, body { height: 100%;   width: 100%; margin: 0; padding: 0; }
+
+#root, .dashboardAppContainer {
+    background-color: #EFF1F4;
+    height: 100%;
+    width: 100%;
+    flex-direction: row;
+    font-family: 'system-ui';
+}
+
+h3 {
+    color: #3D3D3D;
+    font-size: 30px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-wrap: break-word;
+    padding-left: 5%;
+}
+
+.header {
+    box-sizing: border-box;
+    width: 15%;
+    height: 100%;
+    justify-content: space-between;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    padding: .5em;
+    margin-bottom: 2em;
+    background-color: #6F2E71;
+    color: #fff;
+}
+.header .title {
+    font-weight: 100;
+    font-size: 40px;
+}
+.header .logout {
+    font-weight: 200;
+    font-size: 20px;
+    transition: 0.3s all;
+    -webkit-transform: scale(1);
+}
+.header .logout:hover {
+    cursor: pointer;
+    transition: 0.3s all;
+    -webkit-transform: scale(1.1);
+}
+
+.disable-text-selection {
+    -moz-user-select:none; /* firefox */
+    -webkit-user-select: none; /* Safari */
+    -ms-user-select: none; /* IE*/
+    user-select: none; /* Standard syntax */
+ }
+
+.shadow {
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+}

@@ -1,0 +1,89 @@
+html, body, #root, .loginAppContainer {
+  background-color: #6F2E71;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.loginContainer { 
+  background-color: white;
+  width: 30%;
+  border-radius: 2vw !important;
+}
+
+.connexion {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.h2 {
+  font-size: calc(20px + 2vmin);
+  color: #444444;
+}
+
+h1 {
+  font-size: calc(60px + 2vmin);
+  font-weight: 100;
+  color: white
+}
+
+button {
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #6F2E71;
+    font: 200 20px system-ui;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgb(216, 216, 216) rgb(209, 209, 209) rgb(186, 186, 186);
+    width: 60%;
+    height: 50px;
+    transition: 0.3s all;
+    cursor: pointer;
+    margin-bottom: 15%;
+}
+button:hover {
+  background-color: #904f92;
+}
+
+
+.field {
+  font-size: 15px;
+  width: 60%;
+  height: 50px;
+  border-width: 2px;
+  border-style: solid;
+  border-color: #F1F1F1;
+  color: #A4A4A4;
+  position: relative;
+  background-color: #F1F1F1;
+  transition: 0.3s all;
+  padding-left: 5%;
+  margin-bottom: 5%;
+}
+.field:hover {
+  background-color: #fbfbfb;
+  box-shadow: 0px 4px 20px 0px rgba(0, 0, 0, 0.05);
+}
+.field:focus {
+  outline:none;
+  border-width: 2px;
+  border-color: #e1e1e1;
+  border-style: solid;
+}
+
+input::placeholder {
+  font-weight: bold;
+  opacity: 0.5;
+  color: #A4A4A4;
+}

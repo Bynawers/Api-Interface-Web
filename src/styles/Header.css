@@ -1,0 +1,36 @@
+.buttonHeaderContainer {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.buttonHeader {
+    margin-top: 3%;
+    margin-bottom: 3%;
+    width: 95%;
+    height: 3vw;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    font-family: 'Source Sans Pro';
+    transition: all 0.3s;
+}
+.buttonHeader:hover {
+    cursor: pointer;
+    background-color: #A36FA5;
+}
+
+.validHeader {
+
+}
+
+.addHeader {
+
+}
+
+.searchHeader {
+
+}

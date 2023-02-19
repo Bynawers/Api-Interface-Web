@@ -1,0 +1,31 @@
+.content {
+    height: 100%;
+    width: 85%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.description {
+    height: 100%;
+    width: 100%;
+}
+
+.bottomBar {
+    width: 100%;
+}
+
+.addButton {
+    background-color: #6F2E71;
+    transition: 0.3s all;
+    margin-right: 5%;
+}
+.addButton:hover {
+    background-color: #964399;    
+}
+
+.titleContainer {
+    width: 100%;
+    padding: .5vw;
+}
