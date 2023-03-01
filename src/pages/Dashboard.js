@@ -20,7 +20,7 @@ function Dashboard(props) {
 		type: null,
 		natural: null,
 		grape: null,
-		characteritics: [],
+		characteritics: null,
 		temperature_service: {
 			min: null,
 			max: null

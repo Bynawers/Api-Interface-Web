@@ -23,6 +23,7 @@ function SearchBar(props) {
 				className='idSearch'
 				value={search}
 				type="text"
+				placeholder={props.placeholder}
 				onChange={(event) => handleInput(event)}
 			/>
 		</div>

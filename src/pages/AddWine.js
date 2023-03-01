@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import "../styles/AddWine.css"
 import axios from "axios"
 
@@ -6,76 +6,121 @@ import imageWineDefault from '../assets/bottle.png';
 
 function Add(props) {
 
-  const [name, setName] = useState(props.data.name)
-	const [region, setRegion] = useState(props.data.region)
-	const [type, setType] = useState(props.data.region)
-	const [winery, setWinery] = useState(props.data.winery)
-	const [country, setCountry] = useState(props.data.country)
-	const [volume, setVolume] = useState(props.data.volume)
-	const [year, setYear] = useState(props.data.year)
-	const [natural, setNatural] = useState(props.data.natural)
-	const [grape, setGrape] = useState(props.data.grape)
-  const [characteritics, setCharacteritics] = useState(props.data.characteritics.length)
-	const [temperatureServiceMin, setTemperatureServiceMin] = useState(props.data.temperature_service.min)
-	const [temperatureServiceMax, setTemperatureServiceMax] = useState(props.data.temperature_service.max)
+  const [goodForm, setGoodForm] = useState(false)
 
-  const handleAddWine = () => {
-    if (checkAddForm()) {
-      // good
+  const [name, setName] = useState("")
+	const [region, setRegion] = useState("")
+	const [type, setType] = useState("")
+	const [winery, setWinery] = useState("")
+	const [country, setCountry] = useState("")
+	const [volume, setVolume] = useState("")
+	const [year, setYear] = useState("")
+	const [natural, setNatural] = useState("")
+	const [grape, setGrape] = useState("")
+  const [characteritics, setCharacteritics] = useState("")
+	const [temperatureServiceMin, setTemperatureServiceMin] = useState("")
+	const [temperatureServiceMax, setTemperatureServiceMax] = useState("")
+  const [image, setImage] = useState(null)
+
+  useEffect(() => {
+    checkAddForm();
+  });
+
+  const handleAddWine = async() => {
+    if (!checkAddForm()) {
+      return;
     }
-    /*
-    addWine(props.token, {
-      name: name,
-      region: region,
-      type: type,
-      winery: winery,
-      country: country,
-      volume: volume,
-      year: year,
-      natural: natural,
-      grape: grape,
-      characteritics: characteritics,
-      temperature_service: {
-        min: temperatureServiceMin,
-        max: temperatureServiceMax
-      }
-    })*/
+
+    const BASE_URL = "http://192.168.1.83:8000"
+    
+    const formData = new FormData();
+    image ? formData.append('image', image, `${name}_${winery}.png`) : console.log("no image")
+    formData.append('name', name);
+    formData.append('year', year);
+    formData.append('region', region);
+    formData.append('type', type);
+    formData.append('winery', winery);
+    formData.append('country', country);
+    formData.append('volume', volume);
+    formData.append('natural', natural);
+    formData.append('grape', grape);
+    let arrayCharacteristics = characteritics ? characteritics.split("/") : []
+    formData.append('characteritics', arrayCharacteristics);
+    let temperature_service = {
+      min: temperatureServiceMin,
+      max: temperatureServiceMax
+    }
+    formData.append('temperature_service', temperature_service);
+    formData.append('verified', true);
+
+    const config = {
+      headers: {
+        'Content-Type': 'multipart/form-data; boundary=${boundary}',
+        "Content-Disposition": "form-data",
+        authorization: `${props.token}`,
+      },
+    };
+    
+    axios.post(BASE_URL+"/api/wine", formData, config)
+    .then(async function (response) {
+      console.log(response)
+      alert("success")
+    })
+    .catch(function (error) { alert(error) });
+    
   }
 
   const checkAddForm = () => {
-    if (name == "" || country == "" || region == "" || winery == "" || type == "" ) {
+    if (!name || !country || !region || !winery || !type || !year) {
+      setGoodForm(false)
       return false;
     }
-
+    else {
+      setGoodForm(true)
+      return true
+    }
+  }
+  const reset = () => {
+    setGoodForm(false)
+    setName("");
+    setCountry("");
+    setType("");
+    setWinery("");
+    setRegion("");
+    setVolume(null);
+    setYear(null);
+    setNatural("");
+    setGrape("");
+    setCharacteritics([])
+    setTemperatureServiceMin(null)
+    setTemperatureServiceMax(null)
+    setImage(null)
   }
 
   return(
   	<div className='content'>
       <div className='wineChecker shadow'>
-        <div className='titleContainer'>
-          <h3>Ajouter un vin :</h3>
-        </div>
 					<div className='description'>
-						<img src={imageWineDefault} alt="Logo" className='bottle'/>
+						<img src={image ? URL.createObjectURL(image) : imageWineDefault} alt="Logo" className='bottle' style={{ opacity: image ? 1 : 0.2 }}/>
 						<div className='data'>
 							<DataElement name="Name* : " content={name} setContent={setName} type="string"/>
-							<DataElement name="Type* : " content={type} setContent={setType} type="string"/>
+							<DataElement name="Type* : " content={type} setContent={setType} type="string" placeholder="rouge/blanc/rose"/>
 							<DataElement name="Winery* : " content={winery} setContent={setWinery} type="string"/>
 							<DataElement name="Country* : " content={country} setContent={setCountry} type="string"/>
 							<DataElement name="Region* : " content={region} setContent={setRegion} type="string"/>
-							<DataElement name="Volume : " content={volume} setContent={setVolume} type="number"/>
-							<DataElement name="Year : " content={year} setContent={setYear} type="number"/>
-							<DataElement name="Natural : " content={natural} setContent={setNatural} type="boolean"/>
+							<DataElement name="Volume : " content={volume} setContent={setVolume} type="number" placeholder="ml"/>
+							<DataElement name="Year* : " content={year} setContent={setYear} type="number"/>
+							<DataElement name="Natural : " content={natural} setContent={setNatural} type="boolean" placeholder="true/false"/>
 							<DataElement name="Grape : " content={grape} setContent={setGrape} type="string"/>
-							<DataElement name="Characteristics : " content={characteritics} setContent={setCharacteritics} type="number"/>
+							<DataElement name="Characteristics : " content={characteritics} setContent={setCharacteritics} type="string" placeholder="fruité/puissant/..."/>
 							<DataElement name="Temp Min : " content={temperatureServiceMin} setContent={setTemperatureServiceMin} type="number"/>
 							<DataElement name="Temp Max : " content={temperatureServiceMax} setContent={setTemperatureServiceMax} type="number"/>
-              <ImageElement name="Image : "/>	
+              <ImageElement name="Image : " content={image} setContent={setImage}/>	
 						</div>
 					</div>
 					<div className="bottomBar">
             <div className='button'></div>
-						<div className='button addButton' onClick={() => handleAddWine()}>Ajouter</div>
+						<div className='button addButton' style={{ opacity: goodForm ? 1 : .3, cursor: goodForm ? "pointer" : "not-allowed"}} onClick={() => handleAddWine()}>Ajouter</div>
 					</div>
 				</div>
     </div>
@@ -83,6 +128,12 @@ function Add(props) {
 }
 
 const ImageElement = (props) => {
+
+  const handleImageChange = (e) => {
+    const selectedFile = e.target.files[0];
+    props.setContent(selectedFile);
+  };
+
 	return(
 		<div>
 			<span className='typeText'>{props.name}</span>
@@ -90,6 +141,7 @@ const ImageElement = (props) => {
 				type="file"
 				accept='image'
 				className="image"
+        onChange={handleImageChange}
 			/>
 		</div>
 	);
@@ -99,7 +151,6 @@ const DataElement = (props) => {
 
 	const handleInput = (event) => {
 		props.setContent(event.target.value)
-		console.log(event.target.value)
 	}
 
 	return(
@@ -107,27 +158,13 @@ const DataElement = (props) => {
 			<span className='typeText'>{props.name}</span>
 			<input 
 				className={props.type === "string" ? "textInput string" : props.type === "number" ? "textInput number" : "textInput boolean"}
-				value={props.content}
+				value={props.content || ""}
 				onChange={(event) => handleInput(event)}
         autoComplete="new-password"
+        placeholder={props.placeholder || ""}
 			/>
 		</div>
 	);
-}
-
-const addWine = (token, data) => {
-
-	const BASE_URL = "http://192.168.1.83:8000"
-
-	axios.post(BASE_URL+"/api/wine", data, {
-		headers: {
-			authorization: token
-	}
-	})
-	.then(async function (response) {
-		console.log(response)
-	})
-	.catch(function (error) { alert(error) });
 }
 
 export default Add;

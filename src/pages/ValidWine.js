@@ -2,17 +2,18 @@ import React, {useState, useEffect } from 'react';
 import axios from "axios"
 
 import imageWineDefault from '../assets/bottle.png';
+import SearchBar from "../components/SearchBar.js"
 
 import "../styles/ValidWine.css";
 
-import SearchBar from "../components/SearchBar.js"
-
 function ValidWine(props) {
+
+	const BASE_URL = "http://192.168.1.83:8000"
 
 	const [init, setInit] = useState(false)
 	const [page, setPage] = useState(0)
-	const [id, setId] = useState("")
 
+	const [id, setId] = useState("")
 	const [name, setName] = useState(props.data.name)
 	const [region, setRegion] = useState(props.data.region)
 	const [type, setType] = useState(props.data.region)
@@ -22,75 +23,12 @@ function ValidWine(props) {
 	const [year, setYear] = useState(props.data.year)
 	const [natural, setNatural] = useState(props.data.natural)
 	const [grape, setGrape] = useState(props.data.grape)
-	const [characteritics, setCharacteritics] = useState(props.data.characteritics.length)
-	const [temperatureServiceMin, setTemperatureServiceMin] = useState(props.data.temperature_service.min)
-	const [temperatureServiceMax, setTemperatureServiceMax] = useState(props.data.temperature_service.max)
-
-	let wine = {
-		name: null,
-		country: null,
-		region: null,
-		volume: null,
-		winery: null,
-		year: null,
-		natural: null,
-		type: null,
-		natural: null,
-		grape: null,
-		characteritics: [],
-		temperature_service: {
-			min: null,
-			max: null
-		},
-		taste: {
-			acidity: null,
-			fizziness: null,
-			intesity: null,
-			sweetness: null,
-			tannin: null
-		},
-		rating: {
-			rate: null,
-			count: null
-		},
-		image: null,
-		verify: null
-	}
-
-	const [outputWine, setOutputWine] = useState(wine)
+	const [characteritics, setCharacteritics] = useState(props.data.characteritics ? props.data.characteritics.length : 0)
+	const [temperatureServiceMin, setTemperatureServiceMin] = useState(props.data.temperature_service ? props.data.temperature_service.min : null)
+	const [temperatureServiceMax, setTemperatureServiceMax] = useState(props.data.temperature_service ? props.data.temperature_service.max : null)
+	const [image, setImage] = useState(props.data.image)
 
 	useEffect(() => {
-
-		wine = {
-			name: name,
-			country: country,
-			region: region,
-			volume: volume,
-			winery: winery,
-			year: year,
-			natural: natural,
-			type: type,
-			grape: grape,
-			characteritics: props.data.characteritics,
-			temperature_service: {
-				min: temperatureServiceMin,
-				max: temperatureServiceMax
-			},
-			taste: {
-				acidity: props.data.taste.taste,
-				fizziness: props.data.taste.fizziness,
-				intesity: props.data.taste.intesity,
-				sweetness: props.data.taste.sweetness,
-				tannin: props.data.taste.tannin
-			},
-			rating: {
-				rate: props.data.rating.rate,
-				count: props.data.rating.count
-			},
-			image: props.data.image,
-			verify: props.data.verify
-		}
-
 		if (props.isLogin && !init) {
 			console.log('init')
 			setInit(true)
@@ -98,21 +36,41 @@ function ValidWine(props) {
 		}
   });
 
+	useEffect(() => {
+		setRenderData()
+	}, [props.data]);
+
 	const handleSkipWine = () => {
-		console.log("multi wine")
 		getRandomWine(page + 1, props.token, props.setData, setId)
 		setPage(page + 1);
 	}
 
 	const handleSearch = () => {
-		console.log("one wine")
 		getWine(id, props.token, props.setData, setId)
+	}
+
+	const setRenderData = () => {
+		setId(props.data._id)
+		setName(props.data.name)
+		setRegion(props.data.region)
+		setType(props.data.type)
+		setWinery(props.data.winery)
+		setCountry(props.data.country)
+		setVolume(props.data.volume ? props.data.volume : null)
+		setYear(props.data.year)
+		setNatural(props.data.natural ? props.data.natural : null)
+		setGrape(props.data.grape ? props.data.grape : null)
+		setCharacteritics(props.data.characteritics ? props.data.characteritics : null)
+		setTemperatureServiceMin(props.data.temperature_service ? props.data.temperature_service.min : null)
+		setTemperatureServiceMax(props.data.temperature_service ? props.data.temperature_service.max : null)
+		console.log(BASE_URL + "/images/"+ id+".png")
+		setImage(props.data.image)
 	}
 
     return(
       <div className='content'>
 				<div className='headerContainer'>
-					<SearchBar name="ID" value={props.data._id} event={null} setValue={setId}/>
+					<SearchBar name="ID" value={id} event={null} setValue={setId} placeholder={id}/>
 
 					<div className='search shadow disable-text-selection' onClick={() => handleSearch()}>	
 						Search
@@ -122,22 +80,19 @@ function ValidWine(props) {
 
 				{props.data.name !== null && 
 				<div className='wineChecker shadow'>
-					<div className='titleContainer'>
-						<h3>{props.data.name}</h3>
-					</div>
 					<div className='description'>
-						<img src={imageWineDefault} alt="Logo" className='bottle'/>
+						<img src={image ? URL.createObjectURL(BASE_URL + "/images/"+ id+".png") : imageWineDefault} alt="Logo" className='bottle' style={{ opacity: props.data.image ? 1 : 0.2 }}/>
 						<div className='data'>
 							<DataElement name="Name : " content={name} setContent={setName} type="string"/>
-							<DataElement name="Type : " content={type} setContent={setType} type="string"/>
+							<DataElement name="Type : " content={type} setContent={setType} type="string" placeholder="rouge/blanc/rose"/>
 							<DataElement name="Winery : " content={winery} setContent={setWinery} type="string"/>
 							<DataElement name="Country : " content={country} setContent={setCountry} type="string"/>
 							<DataElement name="Region : " content={region} setContent={setRegion} type="string"/>
-							<DataElement name="Volume : " content={volume} setContent={setVolume} type="number"/>
+							<DataElement name="Volume : " content={volume} setContent={setVolume} type="number" placeholder="ml"/>
 							<DataElement name="Year : " content={String(year)} setContent={setYear} type="number"/>
-							<DataElement name="Natural : " content={String(natural)} setContent={setNatural} type="boolean"/>
+							<DataElement name="Natural : " content={String(natural)} setContent={setNatural} type="boolean" placeholder="false/true"/>
 							<DataElement name="Grape : " content={String(grape)} setContent={setGrape} type="string"/>
-							<DataElement name="Characteristics : " content={String(characteritics)} setContent={setCharacteritics} type="number"/>
+							<DataElement name="Characteristics : " content={String(characteritics)} setContent={setCharacteritics} type="number" placeholder="fruité/puissant/..."/>
 							<DataElement name="Temp Min : " content={String(temperatureServiceMin)} setContent={setTemperatureServiceMin} type="number"/>
 							<DataElement name="Temp Max : " content={String(temperatureServiceMax)} setContent={setTemperatureServiceMax} type="number"/>
 							<ImageElement name="Image : "/>			
@@ -184,8 +139,9 @@ const DataElement = (props) => {
 			<span className='typeText'>{props.name}</span>
 			<input 
 				className={props.type === "string" ? "textInput string" : props.type === "number" ? "textInput number" : "textInput boolean"}
-				value={props.content}
+				value={props.content || ""}
 				onChange={(event) => handleInput(event)}
+				placeholder={props.placeholder}
 			/>
 		</div>
 	);
@@ -202,7 +158,6 @@ const getRandomWine = (page, token, setData, setId) => {
 	})
 	.then(async function (response) {
 		setData(response.data[0]);
-		setId(response.data[0].id);
 		console.log(response.data);
 	})
 	.catch(function (error) { alert(error) });
@@ -212,21 +167,21 @@ const getWine = (id, token, setData, setId) => {
 
 	const BASE_URL = "http://192.168.1.83:8000"
 
+	console.log(BASE_URL+"/api/wine/"+id)
+
 	axios.get(BASE_URL+"/api/wine/"+id, {
 		headers: {
 			authorization: token
 	}
 	})
 	.then(async function (response) {
-		setData(response.data);
-		setId(response.data._id)
+		setData(response.data)
 		console.log(response.data)
 	})
 	.catch(function (error) { alert(error) });
 }
 
 const validWine = (token, id, data) => {
-
 
 	const BASE_URL = "http://192.168.1.83:8000"
 
